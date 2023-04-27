@@ -104,7 +104,7 @@ export default function TextEditor() {
             // localStorage.setItem("name", name);
             setStored(name);
             socket.emit("add-user", { name, documentId });
-            // console.log(name, documentId)
+            
         }
     }
 

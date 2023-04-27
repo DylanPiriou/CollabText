@@ -5,37 +5,32 @@ export default function UserList({ socket, documentId }) {
 
   // Ajoute le nouvel utilisateur en ligne lorsqu'il se connecte
   useEffect(() => {
+
       socket.on("user-connected", user => {
-          console.log("Un utilisateur s'est connecté", user)
-          setOnlineUsers((prevUsers) => [...prevUsers, user])
-          console.log(onlineUsers)
+          setOnlineUsers(user)
         });
+
+        socket.on("load-users", users => {
+          console.log("Utilisateurs actuellement connectés: ", users);
+          setOnlineUsers(users);
+        })
 
         return () => {
           socket.off("user-connected");
+          socket.off("load-users");
         };
-      }, [socket])
-
-  // Renvoie la liste des utilisateurs connectés au groupe
-  useEffect(() => {
-    socket.on("load-users", users => {
-      console.log("Utilisateurs actuellement connectés: ", users);
-      setOnlineUsers(users);
-    })
-
-    return () => {
-      socket.off("load-users");
-    };
-  }, [socket]);
+      }, [])
 
   useEffect(() => {
     socket.emit("get-users", documentId)
-  }, [documentId])
+  }, [socket])
+
+  const [offlineUsers, setOfflineUsers] = useState([]);
 
   return (
     <ul>
       {onlineUsers.map((user, index) => {
-        return <li key={index}>{user.name} s'est connecté !</li>
+        return <li key={index}>{user.name} est connecté.</li>
       })}
     </ul>
   )

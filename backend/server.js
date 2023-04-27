@@ -17,12 +17,14 @@ io.on("connection", socket => {
     socket.on("add-user", ({ name, documentId }) => {
         const user = { name, documentId, socketId: socket.id };
         users.push(user)
-        io.emit("user-connected", users);
+        const usersRoom = users.filter(user => user.documentId === documentId);
+        io.to(documentId).emit("user-connected", usersRoom);
       });
 
+    //   Récupère la liste des utilisateurs connectés à un ID de document spécifique et les envoie un client qui qui a émis l'événement (socket.id)
     socket.on("get-users", documentId => {
         const usersRoom = users.filter(user => user.documentId === documentId);
-        io.to(socket.id).emit("load-users", usersRoom)
+        io.emit("load-users", usersRoom)
     })
 
     socket.on("get-document", documentId => {
@@ -36,5 +38,9 @@ io.on("connection", socket => {
 
     socket.on("disconnect", () => {
         console.log(`${socket.id} s'est déconnecté`)
+        users = users.filter(user => user.socketId !== socket.id);
+        // console.log(users);
+        io.emit("user-connected", users);
+        socket.disconnect();
     })
 })
