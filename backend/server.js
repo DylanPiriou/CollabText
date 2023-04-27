@@ -16,9 +16,14 @@ io.on("connection", socket => {
 
     socket.on("add-user", ({ name, documentId }) => {
         const user = { name, documentId, socketId: socket.id };
-        console.log(user)
-        io.emit("user-connected", user);
+        users.push(user)
+        io.emit("user-connected", users);
       });
+
+    socket.on("get-users", documentId => {
+        const usersRoom = users.filter(user => user.documentId === documentId);
+        io.to(socket.id).emit("load-users", usersRoom)
+    })
 
     socket.on("get-document", documentId => {
         const data = "";

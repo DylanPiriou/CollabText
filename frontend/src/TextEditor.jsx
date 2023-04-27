@@ -142,7 +142,7 @@ export default function TextEditor() {
     ) : (
         <>
         <h1>{hello} {stored} !😁</h1>
-        <UserList socket={socket}/>
+        <UserList socket={socket} documentId={documentId} />
         <div className="container" ref={wrapperRef}></div>
         </>
     )}
