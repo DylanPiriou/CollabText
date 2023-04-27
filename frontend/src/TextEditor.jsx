@@ -36,14 +36,6 @@ export default function TextEditor() {
         }
     }, [])
 
-    const [onlineUsers, setOnlineUsers] = useState([]);
-    useEffect(() => {
-        socket.on("user-connected", user => {
-            console.log(user)
-            setOnlineUsers((prevUsers) => [...prevUsers, user]);
-        })
-    }, [])
-
     // Chargement du contenu de l'éditeur à partir du serveur
     useEffect(() => {
         if(socket == null || quill == null) return;
@@ -109,10 +101,10 @@ export default function TextEditor() {
         if(e.key === "Enter"){
             setIsNamed(true);
             const name = inputValue
-            localStorage.setItem("name", name);
+            // localStorage.setItem("name", name);
             setStored(name);
             socket.emit("add-user", { name, documentId });
-            console.log(name, documentId)
+            // console.log(name, documentId)
         }
     }
 
@@ -140,7 +132,6 @@ export default function TextEditor() {
         }
     }, [])
 
-
   return (
     <>
     {isNamed === false && !stored ? (
@@ -151,7 +142,7 @@ export default function TextEditor() {
     ) : (
         <>
         <h1>{hello} {stored} !😁</h1>
-        <UserList onlineUsers={onlineUsers}/>
+        <UserList socket={socket}/>
         <div className="container" ref={wrapperRef}></div>
         </>
     )}

@@ -9,17 +9,17 @@ const io = require("socket.io")(3001, {
 
 // Evènement "connection" qui se déclanche à chaque fois que quelqu'un se connecte au serveur
 // Lors de l'évènement "get-document", on ajoute le socket du client à la room qui correspond à documentId + charge les données du document + est à l'écoute des changements du document pour les envoyer aux autre sockets connectés
-const users = [];
+let users = [];
 io.on("connection", socket => {
+
+    console.log(`${socket.id} s'est connecté`)
+
     socket.on("add-user", ({ name, documentId }) => {
         const user = { name, documentId, socketId: socket.id };
         console.log(user)
-        users.push(user);
-        console.log(users)
         io.emit("user-connected", user);
       });
 
-      
     socket.on("get-document", documentId => {
         const data = "";
         socket.join(documentId);
@@ -27,5 +27,9 @@ io.on("connection", socket => {
         socket.on("send-changes", delta => {
             socket.broadcast.to(documentId).emit("receive-changes", delta)
         })
+    })
+
+    socket.on("disconnect", () => {
+        console.log(`${socket.id} s'est déconnecté`)
     })
 })
