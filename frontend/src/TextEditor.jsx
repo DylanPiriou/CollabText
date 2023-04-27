@@ -4,6 +4,7 @@ import "quill/dist/quill.snow.css";
 import { io } from "socket.io-client";
 import { useParams } from 'react-router-dom';
 import UserList from './UserList';
+import Chat from './Chat';
 
 // Options pour la barre d'outil de l'éditeur de texte (Quill)
 const toolbarOptions = [
@@ -104,7 +105,7 @@ export default function TextEditor() {
             // localStorage.setItem("name", name);
             setStored(name);
             socket.emit("add-user", { name, documentId });
-            
+
         }
     }
 
@@ -143,6 +144,7 @@ export default function TextEditor() {
         <>
         <h1>{hello} {stored} !😁</h1>
         <UserList socket={socket} documentId={documentId} />
+        <Chat/>
         <div className="container" ref={wrapperRef}></div>
         </>
     )}

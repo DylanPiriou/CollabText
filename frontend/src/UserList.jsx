@@ -15,6 +15,8 @@ export default function UserList({ socket, documentId }) {
           setOnlineUsers(users);
         })
 
+        socket.emit("get-users", documentId)
+
         return () => {
           socket.off("user-connected");
           socket.off("load-users");
@@ -22,10 +24,8 @@ export default function UserList({ socket, documentId }) {
       }, [])
 
   useEffect(() => {
-    socket.emit("get-users", documentId)
-  }, [socket])
-
-  const [offlineUsers, setOfflineUsers] = useState([]);
+    socket.on("")
+  }, [])
 
   return (
     <ul>

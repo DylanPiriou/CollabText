@@ -21,7 +21,6 @@ io.on("connection", socket => {
         io.to(documentId).emit("user-connected", usersRoom);
       });
 
-    //   Récupère la liste des utilisateurs connectés à un ID de document spécifique et les envoie un client qui qui a émis l'événement (socket.id)
     socket.on("get-users", documentId => {
         const usersRoom = users.filter(user => user.documentId === documentId);
         io.emit("load-users", usersRoom)
