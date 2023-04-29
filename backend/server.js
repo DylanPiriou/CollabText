@@ -23,8 +23,7 @@ io.on("connection", socket => {
       });
 
     socket.on("get-users", documentId => {
-        const usersRoom = users.filter(user => user.documentId === documentId);
-        io.emit("load-users", usersRoom)
+        io.emit("load-users", users)
     })
 
     socket.on("get-document", documentId => {
@@ -37,10 +36,12 @@ io.on("connection", socket => {
     })
 
     socket.on("disconnect", () => {
-        console.log(`${socket.id} s'est déconnecté`)
-        users = users.filter(user => user.socketId !== socket.id);
-        // console.log(users);
-        io.emit("user-connected", users);
+        const disconnectedUser = users.find(user => user.socketId === socket.id);
+        if (disconnectedUser) {
+          console.log(`${disconnectedUser.username} s'est déconnecté`);
+          users = users.filter(user => user.socketId !== socket.id);
+          io.emit("user-disconnected", disconnectedUser.username);
+        }
         socket.disconnect();
-    })
+      });
 })

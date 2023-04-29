@@ -3,24 +3,31 @@ import "./UserList.scss";
 
 export default function UserList({ socket, documentId }) {
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [offlineUsers, setOfflineUsers] = useState([]);
 
   // Ajoute le nouvel utilisateur en ligne lorsqu'il se connecte
   useEffect(() => {
 
       socket.on("user-connected", user => {
-          setOnlineUsers(user)
+          setOnlineUsers(prevOnlineUsers => [...prevOnlineUsers, user]);
         });
+
+        socket.emit("get-users", documentId);
 
         socket.on("load-users", users => {
           console.log("Utilisateurs actuellement connectés: ", users);
           setOnlineUsers(users);
         })
 
-        socket.emit("get-users", documentId)
+        socket.on("user-disconnected", data => {
+          console.log(data);
+          setOfflineUsers(prevOfflineUsers => [...prevOfflineUsers, data]);
+        })
 
         return () => {
           socket.off("user-connected");
           socket.off("load-users");
+          socket.off("user-disconnected");
         };
       }, [])
 
@@ -30,14 +37,22 @@ export default function UserList({ socket, documentId }) {
 
   return (
     <ul>
-      {onlineUsers.map((user, index) => {
+      {onlineUsers && onlineUsers.map((user, index) => {
         return (
-          <div className="wrapper-user">
-            <span key={`logo-${index}`}>{user.username.slice(0, 2)}</span>
-            <li key={`name-${index}`}><b>{user.username}</b> est connecté.</li>
+          <div className="wrapper-user" key={`connectedUser-${index}`}>
+            <span>{user?.username?.slice(0, 2)}</span>
+            <li><b>{user.username}</b> est connecté.</li>
           </div>
         )
       })}
+      {offlineUsers && offlineUsers.map((user, index) => {
+        return (
+          <div className="wrapper-user">
+            <span>{user.slice(0, 2)}</span>
+            <li><b>{user}</b> est déconnecté.</li>
+          </div>
+        )}
+      )}
     </ul>
   )
 }
