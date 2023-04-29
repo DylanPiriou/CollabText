@@ -14,11 +14,12 @@ io.on("connection", socket => {
 
     console.log(`${socket.id} s'est connecté`)
 
-    socket.on("add-user", ({ name, documentId }) => {
-        const user = { name, documentId, socketId: socket.id };
+    socket.on("add-user", ({ username, documentId }) => {
+        const user = { username, documentId, socketId: socket.id };
+        console.log(user)
         users.push(user)
-        const usersRoom = users.filter(user => user.documentId === documentId);
-        io.to(documentId).emit("user-connected", usersRoom);
+        // const usersRoom = users.filter(user => user.documentId === documentId);
+        io.to(documentId).emit("user-connected", users);
       });
 
     socket.on("get-users", documentId => {

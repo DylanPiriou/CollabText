@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react';
+import "./UserList.scss";
 
 export default function UserList({ socket, documentId }) {
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -30,7 +31,12 @@ export default function UserList({ socket, documentId }) {
   return (
     <ul>
       {onlineUsers.map((user, index) => {
-        return <li key={index}>{user.name} est connecté.</li>
+        return (
+          <div className="wrapper-user">
+            <span key={`logo-${index}`}>{user.username.slice(0, 2)}</span>
+            <li key={`name-${index}`}><b>{user.username}</b> est connecté.</li>
+          </div>
+        )
       })}
     </ul>
   )

@@ -1,0 +1,22 @@
+.wrapper-user{
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1vw;
+
+    span{
+        width: 35px;
+        aspect-ratio: 1;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        outline: 1px solid black;
+        font-weight: bold;
+    }
+
+    li{
+        list-style-type: none;
+    }
+}

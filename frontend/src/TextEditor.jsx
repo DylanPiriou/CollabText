@@ -90,29 +90,20 @@ export default function TextEditor() {
 
     // Gestion du pseudo et stockage dans le localStorage
     const [isNamed, setIsNamed] = useState(false);
-    const [inputValue, setInputValue] = useState("");
-    const [stored, setStored] = useState("");
+    const [username, setUsername] = useState("");
     const input = useRef();
 
-    const handleInput = e => {
-        setInputValue(e.target.value);
+    const getUsername = e => {
+        setUsername(e.target.value);
     }
 
     const handleKeyPress = e => {
         if(e.key === "Enter"){
             setIsNamed(true);
-            const name = inputValue
-            // localStorage.setItem("name", name);
-            setStored(name);
-            socket.emit("add-user", { name, documentId });
+            socket.emit("add-user", { username, documentId });
 
         }
     }
-
-    useEffect(() => {
-        const storedName = localStorage.getItem("name");
-        storedName && setStored(storedName);
-    }, [])
 
     // Gestion du message en fonction de l'heure de la journée
     const [hello, setHello] = useState("");
@@ -135,17 +126,20 @@ export default function TextEditor() {
 
   return (
     <>
-    {isNamed === false && !stored ? (
+    {isNamed === false ? (
         <form>
             <h2>Entrez votre pseudo😋</h2>
-            <input type="text" name="" id="" placeholder="ex. Mozart" onChange={(e) => handleInput(e)} onKeyDown={(e) => handleKeyPress(e)} ref={input}/>
+            <input type="text" name="" id="" placeholder="ex. Mozart" onChange={(e) => getUsername(e)} onKeyDown={(e) => handleKeyPress(e)} ref={input}/>
+            <h2>Entrez l'ID de groupe</h2>
+            <input type="text" />
         </form>
     ) : (
         <>
-        <h1>{hello} {stored} !😁</h1>
+        <h1>{hello} {username} !😁</h1>
         <UserList socket={socket} documentId={documentId} />
         <Chat/>
-        <div className="container" ref={wrapperRef}></div>
+        <div className="container" ref={wrapperRef}>
+        </div>
         </>
     )}
     </>
