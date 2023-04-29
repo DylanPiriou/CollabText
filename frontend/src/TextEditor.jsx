@@ -93,10 +93,6 @@ export default function TextEditor() {
     const [username, setUsername] = useState("");
     const input = useRef();
 
-    const getUsername = e => {
-        setUsername(e.target.value);
-    }
-
     const handleKeyPress = e => {
         if(e.key === "Enter"){
             setIsNamed(true);
@@ -119,7 +115,7 @@ export default function TextEditor() {
                 setHello("Bon après-midi");
                 break;
             default:
-                setHello("Bonsoir");
+                setHello("Bonjour");
                 break;
         }
     }, [])
@@ -131,7 +127,7 @@ export default function TextEditor() {
     {isNamed === false ? (
         <form>
             <h2>Entrez votre pseudo😋</h2>
-            <input type="text" name="" id="" placeholder="ex. Mozart" onChange={(e) => getUsername(e)} onKeyDown={(e) => handleKeyPress(e)} ref={input}/>
+            <input type="text" name="" id="" placeholder="ex. Mozart" onChange={(e) => setUsername(e.target.value)} onKeyDown={(e) => handleKeyPress(e)} ref={input}/>
             <h2>Entrez l'ID de groupe</h2>
             <input type="text" />
         </form>

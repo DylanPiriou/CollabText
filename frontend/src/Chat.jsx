@@ -42,7 +42,7 @@ export default function Chat({ username, socket, documentId }) {
                     ☎
                 </div>
             ) : (
-                <div className="chat-content">
+                <ScrollToBottom className="chat-content">
                     <ul className="message-area">
                         {chat.map((content, index) => {
                             return (
@@ -68,7 +68,7 @@ export default function Chat({ username, socket, documentId }) {
                     <span ref={btn} onClick={() => handleChat()}>
                         X
                     </span>
-                </div>
+                </ScrollToBottom>
             )}
         </div>
     );

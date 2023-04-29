@@ -26,6 +26,10 @@
         padding-bottom: 50px;
         overflow-y: scroll;
 
+        &::-webkit-scrollbar{
+            display: none;
+        }
+
         .message-area {
             flex: 1;
             width: 100%;
