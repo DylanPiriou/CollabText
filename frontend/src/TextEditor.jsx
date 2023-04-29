@@ -124,6 +124,8 @@ export default function TextEditor() {
         }
     }, [])
 
+    
+
   return (
     <>
     {isNamed === false ? (
@@ -137,7 +139,7 @@ export default function TextEditor() {
         <>
         <h1>{hello} {username} !😁</h1>
         <UserList socket={socket} documentId={documentId} />
-        <Chat/>
+        <Chat username={username} socket={socket} documentId={documentId} />
         <div className="container" ref={wrapperRef}>
         </div>
         </>

@@ -1,9 +1,9 @@
 // Création du serveur Socket.io qui écoute sur le port 3001
 // Paramètrage de cors pour autoriser l'accès au serveur de localhost:5173 avec les méthodes GET & POST
 const io = require("socket.io")(3001, {
-    cors : {
-        origin : "http://localhost:5173",
-        methods : ["GET", "POST"]
+    cors: {
+        origin: "http://localhost:5173",
+        methods: ["GET", "POST"]
     }
 });
 
@@ -20,7 +20,7 @@ io.on("connection", socket => {
         users.push(user)
         // const usersRoom = users.filter(user => user.documentId === documentId);
         io.to(documentId).emit("user-connected", users);
-      });
+    });
 
     socket.on("get-users", documentId => {
         io.emit("load-users", users)
@@ -35,13 +35,17 @@ io.on("connection", socket => {
         })
     })
 
+    socket.on("send-message", data => {
+        socket.to(data.room).emit("receive-message", data);
+    })
+
     socket.on("disconnect", () => {
         const disconnectedUser = users.find(user => user.socketId === socket.id);
         if (disconnectedUser) {
-          console.log(`${disconnectedUser.username} s'est déconnecté`);
-          users = users.filter(user => user.socketId !== socket.id);
-          io.emit("user-disconnected", disconnectedUser.username);
+            console.log(`${disconnectedUser.username} s'est déconnecté`);
+            users = users.filter(user => user.socketId !== socket.id);
+            io.emit("user-disconnected", disconnectedUser.username);
         }
         socket.disconnect();
-      });
+    });
 })
