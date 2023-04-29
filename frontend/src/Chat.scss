@@ -1,0 +1,120 @@
+.chat {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    border-radius: 5px;
+    background: rgb(9, 9, 85);
+    z-index: 999;
+
+    .chat-icon {
+        width: 50px;
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: whitesmoke;
+        cursor: pointer;
+    }
+
+    .chat-content {
+        height: 350px;
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding-bottom: 50px;
+        overflow-y: scroll;
+
+        .message-area {
+            flex: 1;
+            width: 100%;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 10px;
+
+            .message {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: center;
+                color: whitesmoke;
+
+                .content-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    max-width: 100%;
+                    padding: 10px;
+                    border-radius: 5px;
+                    word-wrap: break-word;
+
+                    .content {
+                        list-style-type: none;
+                        font-weight: bold;
+                    }
+
+                    .data {
+                        display: flex;
+                        font-size: 10px;
+                        font-style: italic;
+                        color: whitesmoke;
+                    }
+                }
+            }
+
+            #me {
+                align-items: flex-start;
+
+                .content-wrapper {
+                    align-items: flex-start;
+                    background: #0187c5;
+                }
+            }
+
+            #other{
+                align-items: flex-end;
+
+                .content-wrapper {
+                    align-items: flex-end;
+                    background: #05b950;
+                }
+            }
+        }
+
+        input {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 30px;
+            border: none;
+            outline: none;
+            padding-left: 20px;
+
+            &:is(:focus) {
+                border: 2px solid rgb(34, 34, 34);
+            }
+        }
+
+        span {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 20px;
+            aspect-ratio: 1;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: whitesmoke;
+            outline: 1px solid black;
+            cursor: pointer;
+        }
+    }
+}

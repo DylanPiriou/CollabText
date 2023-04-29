@@ -1,18 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
+import "./Chat.scss";
+import ScrollToBottom from "react-scroll-to-bottom";
 
 export default function Chat({ username, socket, documentId }) {
     const [isOpen, setIsOpen] = useState(true);
     const btn = useRef();
     const input = useRef();
-    const handleBox = () => {
-        setIsOpen(!isOpen);
-    };
 
     const [currentMessage, setCurrentMessage] = useState("");
     const [chat, setChat] = useState([]);
 
     const sendMessage = async (e) => {
-        if (e.key === "Enter") {
+        if (currentMessage !== "" && currentMessage.trim().length !== 0 && e.key === "Enter") {
             const messageData = {
                 room: documentId,
                 userId: socket.id,
@@ -32,31 +31,45 @@ export default function Chat({ username, socket, documentId }) {
         });
     }, [socket]);
 
+    const handleChat = () => {
+        setIsOpen(!isOpen);
+    }
+
     return (
-        <>
+        <div className="chat">
             {isOpen ? (
-                <div className="chat">
-                    <div className="message-area">
-                        <ul>
-                            {chat.map((content, index) => {
-                                return <li key={`message-${index}`}>{content.message}</li>
-                            })}
-                        </ul>
-                    </div>
+                <div className="chat-icon" onClick={() => handleChat()}>
+                    ☎
+                </div>
+            ) : (
+                <div className="chat-content">
+                    <ul className="message-area">
+                        {chat.map((content, index) => {
+                            return (
+                                <li className="message" id={username === content.username ? "me" : "other"} key={`message-${index}`}>
+                                    <div className="content-wrapper">
+                                        <div className="content">{content.message}</div>
+                                        <div className="data">{content.username} - {content.time}</div>
+                                    </div>
+                                </li>
+                            )
+                        })}
+                    </ul>
                     <input
                         type="text"
                         name=""
                         id=""
+                        placeholder="Let's talk !"
                         value={currentMessage}
                         ref={input}
                         onChange={(e) => setCurrentMessage(e.target.value)}
                         onKeyDown={(e) => sendMessage(e)}
                     />
-                    <span ref={btn} onClick={() => handleBox()}>
+                    <span ref={btn} onClick={() => handleChat()}>
                         X
                     </span>
                 </div>
-            ) : null}
-        </>
+            )}
+        </div>
     );
 }

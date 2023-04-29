@@ -47,7 +47,7 @@ export default function UserList({ socket, documentId }) {
       })}
       {offlineUsers && offlineUsers.map((user, index) => {
         return (
-          <div className="wrapper-user">
+          <div className="wrapper-user" key={`disconnectedUser-${index}`}>
             <span>{user.slice(0, 2)}</span>
             <li><b>{user}</b> est déconnecté.</li>
           </div>
