@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import { io } from "socket.io-client";
-import { useParams } from 'react-router-dom';
-import UserList from './UserList';
-import Chat from './Chat';
+import  { useParams }  from 'react-router-dom';
+import Modal from './Modal';
+import Header from './Header';
 
 // Options pour la barre d'outil de l'éditeur de texte (Quill)
 const toolbarOptions = [
@@ -91,8 +91,7 @@ export default function TextEditor() {
     // Gestion du pseudo et stockage dans le localStorage
     const [isNamed, setIsNamed] = useState(false);
     const [username, setUsername] = useState("");
-    const input = useRef();
-
+    
     const handleKeyPress = e => {
         if(e.key === "Enter"){
             setIsNamed(true);
@@ -101,43 +100,14 @@ export default function TextEditor() {
         }
     }
 
-    // Gestion du message en fonction de l'heure de la journée
-    const [hello, setHello] = useState("");
-    useEffect(() => {
-        const date = new Date();
-        const hour = date.getHours();
-
-        switch (true){
-            case hour < 13:
-                setHello("Bonjour");
-                break;
-            case hour < 18:
-                setHello("Bon après-midi");
-                break;
-            default:
-                setHello("Bonjour");
-                break;
-        }
-    }, [])
-
-    
-
   return (
     <>
     {isNamed === false ? (
-        <form>
-            <h2>Entrez votre pseudo😋</h2>
-            <input type="text" name="" id="" placeholder="ex. Mozart" onChange={(e) => setUsername(e.target.value)} onKeyDown={(e) => handleKeyPress(e)} ref={input}/>
-            <h2>Entrez l'ID de groupe</h2>
-            <input type="text" />
-        </form>
+        <Modal socket={socket} username={username} setUsername={setUsername} handleKeyPress={handleKeyPress} />
     ) : (
         <>
-        <h1>{hello} {username} !😁</h1>
-        <UserList socket={socket} documentId={documentId} />
-        <Chat username={username} socket={socket} documentId={documentId} />
-        <div className="container" ref={wrapperRef}>
-        </div>
+        <Header socket={socket} username={username} documentId={documentId} />
+        <div className="container" ref={wrapperRef}></div>
         </>
     )}
     </>

@@ -8,56 +8,61 @@ export default function UserList({ socket, documentId }) {
   // Ajoute le nouvel utilisateur en ligne lorsqu'il se connecte
   useEffect(() => {
 
-      socket.on("user-connected", user => {
-          setOnlineUsers(prevOnlineUsers => [...prevOnlineUsers, user]);
-        });
+    socket.on("user-connected", user => {
+      setOnlineUsers(prevOnlineUsers => [...prevOnlineUsers, user]);
+    });
 
-        socket.emit("get-users", documentId);
+    socket.emit("get-users", documentId);
 
-        socket.on("load-users", users => {
-          console.log("Utilisateurs actuellement connectés: ", users);
-          setOnlineUsers(users);
-        })
+    socket.on("load-users", users => {
+      console.log("Utilisateurs actuellement connectés: ", users);
+      setOnlineUsers(users);
+      setOfflineUsers(prev => prev.filter(user => !users.includes(user)))
+    })
 
-        socket.on("user-disconnected", data => {
-          console.log(data);
-          setOfflineUsers(prevOfflineUsers => [...prevOfflineUsers, data.username]);
-          setOnlineUsers(prevOnlineUsers =>
-            prevOnlineUsers.filter(user => user.socketId !== data.socketId)
-          );
-        })
+    socket.on("user-disconnected", data => {
+      setOfflineUsers(prevOfflineUsers => [...prevOfflineUsers, data.username]);
+      setOnlineUsers(prevOnlineUsers =>
+        prevOnlineUsers.filter(user => user.socketId !== data.socketId)
+      );
+    })
 
-        return () => {
-          socket.off("user-connected");
-          socket.off("load-users");
-          socket.off("user-disconnected");
-        };
-      }, [])
+
+    return () => {
+      socket.off("user-connected");
+      socket.off("load-users");
+      socket.off("user-disconnected");
+    };
+  }, [])
 
   const [onlineMessage, setOnlineMessage] = useState("")
   useEffect(() => {
     setOnlineMessage(onlineUsers.length > 1 ? "Utilisateurs connectés" : "Utilisateur connecté");
+
   }, [onlineUsers])
 
+  const [isOpen, setIsOpen] = useState(false);
+  const handleCollapse = () => {
+    setIsOpen(!isOpen);
+  }
+
   return (
-    <ul>
-    <h2>{onlineMessage} : {onlineUsers.length}</h2>
-      {onlineUsers && onlineUsers.map((user, index) => {
-        return (
-          <div className="wrapper-user" key={`connectedUser-${index}`}>
-            <span>{user?.username?.slice(0, 2)}</span>
-            <li><b>{user.username}</b> est connecté.</li>
-          </div>
-        )
-      })}
-      {/* {offlineUsers && offlineUsers.map((user, index) => {
-        return (
-          <div className="wrapper-user" key={`disconnectedUser-${index}`}>
-            <span>{user?.slice(0, 2)}</span>
-            <li><b>{user}</b> est déconnecté.</li>
-          </div>
-        )}
-      )} */}
-    </ul>
+    <div className="online-container" onClick={() => handleCollapse()}>
+      <div className="header-collapse">
+        <h2>{onlineMessage} : {onlineUsers.length}</h2>
+      </div>
+      {isOpen && (
+        <ul className="users-wrapper">
+          {onlineUsers && onlineUsers.map((user, index) => {
+            return (
+              <li className="user" key={`connectedUser-${index}`}>
+                <span className="logo">{user?.username?.slice(0, 2)}</span>
+                <span className="data"><b>{user.username}</b> est connecté.</span>
+              </li>
+            )
+          })}
+        </ul>
+      )}
+    </div>
   )
 }

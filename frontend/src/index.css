@@ -1,4 +1,6 @@
 *, *::before, *::after {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -6,48 +8,6 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   background-color: #F3F3F3;
   margin: 0;
-}
-
-form{
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #000000cc;
-  backdrop-filter: blur(2px);
-  z-index: 999;
-}
-form h2{
-  font-size: 32px;
-  color: whitesmoke;
-}
-form input{
-  border: none;
-  outline: none;
-  width: 50%;
-  height: 5vh;
-  border-radius: 50px;
-  padding-left: 3vw;
-  font-size: 22px;
-  font-family: Arial, Helvetica, sans-serif;
-  background: whitesmoke;
-}
-
-form input:is(:focus){
-  outline: 2px solid rgb(156, 255, 63);
-}
-
-h1{
-  width: 100%;
-  height: 10vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .container .ql-editor {

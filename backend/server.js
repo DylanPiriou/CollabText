@@ -16,9 +16,7 @@ io.on("connection", socket => {
 
     socket.on("add-user", ({ username, documentId }) => {
         const user = { username, documentId, socketId: socket.id };
-        console.log(user)
         users.push(user)
-        // const usersRoom = users.filter(user => user.documentId === documentId);
         io.to(documentId).emit("user-connected", users);
     });
 
@@ -38,6 +36,10 @@ io.on("connection", socket => {
     socket.on("send-message", data => {
         socket.to(data.room).emit("receive-message", data);
     })
+
+    socket.on("join-room", ({ roomId, documentId }) => {
+        console.log(roomId, documentId)
+    });
 
     socket.on("disconnect", () => {
         const disconnectedUser = users.find(user => user.socketId === socket.id);

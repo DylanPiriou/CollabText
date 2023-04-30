@@ -72,7 +72,7 @@ export default function Chat({ username, socket, documentId }) {
                                 type="text"
                                 name=""
                                 id=""
-                                placeholder="Let's talk !"
+                                placeholder="Commencez à parler..."
                                 value={currentMessage}
                                 ref={input}
                                 onChange={(e) => setCurrentMessage(e.target.value)}
