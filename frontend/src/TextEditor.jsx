@@ -47,6 +47,17 @@ export default function TextEditor() {
         socket.emit("get-document", documentId);
     }, [socket, quill, documentId])
 
+    useEffect(() => {
+        if(socket == null || quill == null) return;
+        const interval = setInterval(() => {
+            socket.emit("save-document", quill.getContents())
+        }, 2000);
+
+        return () => {
+            clearInterval(interval)
+        }
+    }, [socket, quill])
+
     // Ecoute les modifications venant d'autres utilisateurs
     useEffect(() => {
         if(socket == null || quill == null) return;
