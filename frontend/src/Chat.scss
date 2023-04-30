@@ -88,7 +88,7 @@
             }
 
             #me {
-                align-items: flex-start;
+                align-items: flex-end;
 
                 .content-wrapper {
                     align-items: flex-start;
@@ -97,7 +97,7 @@
             }
 
             #other{
-                align-items: flex-end;
+                align-items: flex-start;
 
                 .content-wrapper {
                     align-items: flex-end;

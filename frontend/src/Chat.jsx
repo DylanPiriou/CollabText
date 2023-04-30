@@ -27,8 +27,8 @@ export default function Chat({ username, socket, documentId }) {
     const [newMessage, setNewMessage] = useState(false);
     useEffect(() => {
         socket.on("receive-message", (data) => {
-            setNewMessage(true);
             setChat(current => [...current, data]);
+            setNewMessage(true);
         });
 
         return () => {
