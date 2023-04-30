@@ -1,20 +1,26 @@
-.chat {
-    position: absolute;
-    right: 20px;
+.chat-icon {
+    position: fixed;
     top: 20px;
-    border-radius: 5px;
+    right: 20px;
+    width: 50px;
+    aspect-ratio: 1;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: whitesmoke;
     background: rgb(9, 9, 85);
-    z-index: 999;
+    cursor: pointer;
+    z-index: 10;
+}
 
-    .chat-icon {
-        width: 50px;
-        aspect-ratio: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: whitesmoke;
-        cursor: pointer;
-    }
+.chat {
+    position: fixed;
+    right: 60px;
+    top: 80px;
+    background: rgb(3, 3, 39);
+    outline: 1px solid rgb(9, 9, 85);
+    z-index: 10;
 
     .chat-content {
         height: 350px;
@@ -23,8 +29,6 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        padding-bottom: 50px;
-        overflow-y: scroll;
 
         &::-webkit-scrollbar{
             display: none;
@@ -40,6 +44,7 @@
             align-items: flex-start;
             justify-content: flex-start;
             gap: 10px;
+            margin-bottom: 30px;
 
             .message {
                 width: 100%;
@@ -91,34 +96,38 @@
             }
         }
 
-        input {
+        .input-wrapper{
             position: absolute;
             left: 0;
             bottom: 0;
             width: 100%;
             height: 30px;
-            border: none;
-            outline: none;
-            padding-left: 20px;
-
-            &:is(:focus) {
-                border: 2px solid rgb(34, 34, 34);
-            }
-        }
-
-        span {
-            position: absolute;
-            top: 0;
-            right: 0;
-            height: 20px;
-            aspect-ratio: 1;
-            border-radius: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: whitesmoke;
-            outline: 1px solid black;
-            cursor: pointer;
+
+            input {
+                flex: 1;
+                height: 100%;
+                border: none;
+                outline: none;
+                padding-left: 20px;
+            }
+
+            button{
+                height: 100%;
+                width: fit-content;
+                min-width: 60px;
+                border: none;
+                outline: none;
+                background: rgb(9, 9, 85);
+                color: whitesmoke;
+                cursor: pointer;
+
+                &:hover{
+                    background: rgb(13, 13, 179);;
+                }
+            }
         }
     }
 }
