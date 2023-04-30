@@ -44,7 +44,7 @@ io.on("connection", socket => {
         if (disconnectedUser) {
             console.log(`${disconnectedUser.username} s'est déconnecté`);
             users = users.filter(user => user.socketId !== socket.id);
-            io.emit("user-disconnected", disconnectedUser.username);
+            io.emit("user-disconnected", disconnectedUser);
         }
         socket.disconnect();
     });

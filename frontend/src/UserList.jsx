@@ -21,7 +21,10 @@ export default function UserList({ socket, documentId }) {
 
         socket.on("user-disconnected", data => {
           console.log(data);
-          setOfflineUsers(prevOfflineUsers => [...prevOfflineUsers, data]);
+          setOfflineUsers(prevOfflineUsers => [...prevOfflineUsers, data.username]);
+          setOnlineUsers(prevOnlineUsers =>
+            prevOnlineUsers.filter(user => user.socketId !== data.socketId)
+          );
         })
 
         return () => {
@@ -31,12 +34,14 @@ export default function UserList({ socket, documentId }) {
         };
       }, [])
 
+  const [onlineMessage, setOnlineMessage] = useState("")
   useEffect(() => {
-    socket.on("")
-  }, [])
+    setOnlineMessage(onlineUsers.length > 1 ? "Utilisateurs connectés" : "Utilisateur connecté");
+  }, [onlineUsers])
 
   return (
     <ul>
+    <h2>{onlineMessage} : {onlineUsers.length}</h2>
       {onlineUsers && onlineUsers.map((user, index) => {
         return (
           <div className="wrapper-user" key={`connectedUser-${index}`}>
@@ -45,14 +50,14 @@ export default function UserList({ socket, documentId }) {
           </div>
         )
       })}
-      {offlineUsers && offlineUsers.map((user, index) => {
+      {/* {offlineUsers && offlineUsers.map((user, index) => {
         return (
           <div className="wrapper-user" key={`disconnectedUser-${index}`}>
-            <span>{user.slice(0, 2)}</span>
+            <span>{user?.slice(0, 2)}</span>
             <li><b>{user}</b> est déconnecté.</li>
           </div>
         )}
-      )}
+      )} */}
     </ul>
   )
 }

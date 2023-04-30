@@ -24,14 +24,21 @@ export default function Chat({ username, socket, documentId }) {
         }
     };
 
+    const [newMessage, setNewMessage] = useState(false);
     useEffect(() => {
         socket.on("receive-message", (data) => {
+            setNewMessage(true);
             setChat(current => [...current, data]);
         });
+
+        return () => {
+            socket.off("receive-message")
+        }
     }, [socket]);
 
     const handleChat = () => {
         setIsOpen(!isOpen);
+        setNewMessage(false);
     }
 
     return (
@@ -39,6 +46,7 @@ export default function Chat({ username, socket, documentId }) {
             {isOpen ? (
                 <div className="chat-icon" onClick={() => handleChat()}>
                     ☎
+                    {newMessage && <span className="notif"></span>}
                 </div>
             ) : (
                 <>
