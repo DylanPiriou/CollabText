@@ -20,16 +20,19 @@ io.on("connection", socket => {
     // Ajouter un utilisateur
     socket.on("add-user", ({ username, documentId }) => {
         socket.username = username;
+        socket.docId = documentId;
         console.log(`${socket.username} s'est connecté`)
         const user = { username, documentId, socketId: socket.id };
         users.push(user)
-        io.to(documentId).emit("user-connected", users);
+        io.to(documentId).emit("user-connected", user);
     });
 
     // Récupérer la liste des utilisarteurs connectés
     socket.on("get-users", documentId => {
-        io.emit("load-users", users)
-    })
+        const usersInRoom = users.filter(user => user.documentId === documentId);
+        console.log(usersInRoom);
+        io.emit("load-users", usersInRoom);
+    });
 
     // Gérer le document (obtenir/envoyer/sauvegarder les changements)
     socket.on("get-document", async documentId => {
