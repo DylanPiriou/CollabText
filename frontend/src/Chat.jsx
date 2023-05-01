@@ -3,87 +3,126 @@ import "./Chat.scss";
 import ScrollToBottom from "react-scroll-to-bottom";
 
 export default function Chat({ username, socket, documentId }) {
-    const [isOpen, setIsOpen] = useState(true);
-    const input = useRef();
+  const [isOpen, setIsOpen] = useState(true);
+  const [currentMessage, setCurrentMessage] = useState("");
+  const [isWriting, setIsWriting] = useState("");
+  const [chat, setChat] = useState([]);
+  
+    // Récupère ce qui est écrit dans l'input + affiche que quelqu'un écrit  
+  const handleChange = e => {
+    setCurrentMessage(e.target.value);
+    handleWritting()
+  }
 
-    const [currentMessage, setCurrentMessage] = useState("");
-    const [chat, setChat] = useState([]);
+  const handleWritting = () => {
+    socket.emit("writting", username);
+  }
 
-    const sendMessage = async (e) => {
-        if (currentMessage !== "" && currentMessage.trim().length !== 0) {
-            const messageData = {
-                room: documentId,
-                userId: socket.id,
-                username: username,
-                message: currentMessage,
-                time: new Date().getHours() + ":" + new Date().getMinutes(),
-            };
-            await socket.emit("send-message", messageData);
-            setCurrentMessage("");
-            setChat(current => [...current, messageData]);
-        }
-    };
+  const handleNotWritting = () => {
+    socket.emit("not-writting");
+  }
 
-    const [newMessage, setNewMessage] = useState(false);
-    useEffect(() => {
-        socket.on("receive-message", (data) => {
-            setChat(current => [...current, data]);
-            setNewMessage(true);
-        });
+  useEffect(() => {
+    socket.on("writting", username => {
+        setIsWriting(`${username} est en train d'écrire...`);
+    })
+    socket.on("not-writting", () => {
+        setIsWriting("");
+    })
 
-        return () => {
-            socket.off("receive-message")
-        }
-    }, [socket]);
-
-    const handleChat = () => {
-        setIsOpen(!isOpen);
-        setNewMessage(false);
+    return () => {
+        socket.off("writting");
+        socket.off("not-writting");
     }
+  }, [])
 
-    return (
+    // Logique pour envoyer un message   
+  const sendMessage = async (e) => {
+    if (currentMessage.trim().length !== 0) {
+      const messageData = {
+        room: documentId,
+        userId: socket.id,
+        username: username,
+        message: currentMessage,
+        time: new Date().getHours() + ":" + new Date().getMinutes(),
+      };
+      await socket.emit("send-message", messageData);
+      setCurrentMessage("");
+      setChat((current) => [...current, messageData]);
+      handleNotWritting();
+    }
+  };
+
+      // Logique pour recevoir le message  
+  const [newMessage, setNewMessage] = useState(false);
+  useEffect(() => {
+    socket.on("receive-message", (data) => {
+      setChat((current) => [...current, data]);
+      setNewMessage(true);
+    });
+
+    return () => {
+      socket.off("receive-message");
+    };
+  }, [socket]);
+
+    // Logique pour l'ouverture/fermeture du chat
+  const handleChat = () => {
+    setIsOpen(!isOpen);
+    setNewMessage(false);
+  };
+
+  return (
+    <>
+      {isOpen ? (
+        <div className="chat-icon" onClick={() => handleChat()}>
+          ☎{newMessage && <span className="notif"></span>}
+        </div>
+      ) : (
         <>
-            {isOpen ? (
-                <div className="chat-icon" onClick={() => handleChat()}>
-                    ☎
-                    {newMessage && <span className="notif"></span>}
-                </div>
-            ) : (
-                <>
-                    <div className="chat-icon" onClick={() => handleChat()}>
-                        x
-                    </div>
-                <div className="chat">
-                    <ScrollToBottom className="chat-content">
-                        <ul className="message-area">
-                            {chat.map((content, index) => {
-                                return (
-                                    <li className="message" id={username === content.username ? "me" : "other"} key={`message-${index}`}>
-                                        <div className="content-wrapper">
-                                            <div className="content">{content.message}</div>
-                                            <div className="data">{content.username} - {content.time}</div>
-                                        </div>
-                                    </li>
-                                )
-                            })}
-                        </ul>
-                        <div className="input-wrapper">
-                            <input
-                                type="text"
-                                name=""
-                                id=""
-                                placeholder="Commencez à parler..."
-                                value={currentMessage}
-                                ref={input}
-                                onChange={(e) => setCurrentMessage(e.target.value)}
-                                onKeyDown={(e) => {e.key === "Enter" && sendMessage(e)}}
-                            />
-                            <button onClick={() => sendMessage()}>►</button>
+          <div className="chat-icon" onClick={() => handleChat()}>
+            x
+          </div>
+          <div className="chat">
+            <ScrollToBottom className="chat-content">
+              <ul className="message-area">
+                {chat.map((content, index) => {
+                  return (
+                    <li
+                      className="message"
+                      id={username === content.username ? "me" : "other"}
+                      key={`message-${index}`}
+                    >
+                      <div className="content-wrapper">
+                        <div className="content">{content.message}</div>
+                        <div className="data">
+                          {content.username} - {content.time}
                         </div>
-                    </ScrollToBottom>
-                </div>
-                </>
-            )}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+              <p>{isWriting}</p>
+              <div className="input-wrapper">
+                <input
+                  type="text"
+                  name=""
+                  id=""
+                  placeholder="Commencez à parler..."
+                  value={currentMessage}
+                  onChange={(e) => handleChange(e)}
+                  onBlur={() => {handleNotWritting()}}
+                  onKeyDown={(e) => {
+                    e.key === "Enter" && sendMessage(e);
+                  }}
+                />
+                <button onClick={() => sendMessage()}>►</button>
+              </div>
+            </ScrollToBottom>
+          </div>
         </>
-    );
+      )}
+    </>
+  );
 }

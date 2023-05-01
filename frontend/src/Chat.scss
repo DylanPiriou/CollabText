@@ -39,6 +39,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
+        position: relative;
 
         &::-webkit-scrollbar{
             display: none;
@@ -104,6 +105,13 @@
                     background: #05b950;
                 }
             }
+        }
+
+        p{
+            position: absolute;
+            left: 0;
+            bottom: 50px;
+            color: whitesmoke;
         }
 
         .input-wrapper{

@@ -10,8 +10,6 @@ mongoose.connect(process.env.MONGO_URI,
   }
 );
 
-// Création du serveur Socket.io qui écoute sur le port 3001
-// Paramètrage de cors pour autoriser l'accès au serveur de localhost:5173 avec les méthodes GET & POST
 const io = require("socket.io")(3001, {
     cors: {
         origin: "http://localhost:5173",
@@ -20,15 +18,13 @@ const io = require("socket.io")(3001, {
 });
 
 const defaultValue = "";
-
-// Evènement "connection" qui se déclanche à chaque fois que quelqu'un se connecte au serveur
-// Lors de l'évènement "get-document", on ajoute le socket du client à la room qui correspond à documentId + charge les données du document + est à l'écoute des changements du document pour les envoyer aux autre sockets connectés
 let users = [];
 io.on("connection", socket => {
 
     console.log(`${socket.id} s'est connecté`)
 
     socket.on("add-user", ({ username, documentId }) => {
+        socket.username = username;
         const user = { username, documentId, socketId: socket.id };
         users.push(user)
         io.to(documentId).emit("user-connected", users);
@@ -60,6 +56,16 @@ io.on("connection", socket => {
     socket.on("join-room", ({ roomId, documentId }) => {
         // console.log(roomId, documentId)
     });
+
+    socket.on("writting", username => {
+        console.log(username)
+        socket.broadcast.emit("writting", username);
+    })
+
+    socket.on("not-writting", () => {
+        console.log("not-writting")
+        socket.broadcast.emit("not-writting");
+    })
 
     socket.on("disconnect", () => {
         const disconnectedUser = users.find(user => user.socketId === socket.id);
