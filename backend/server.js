@@ -1,14 +1,9 @@
-require("dotenv").config();
-const mongoose = require("mongoose");
-const Document = require("./document");
-const Message = require("./message");
+const connectDB = require("./mongo");
+const docSchema = require("./Models/model.document");
+const messageSchema = require("./Models/model.message");
+const dotenv = require("dotenv").config();
 
-mongoose.connect(process.env.MONGO_URI,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
+connectDB();
 
 const io = require("socket.io")(3001, {
     cors: {
@@ -19,21 +14,24 @@ const io = require("socket.io")(3001, {
 
 const defaultValue = "";
 let users = [];
+
 io.on("connection", socket => {
 
-    console.log(`${socket.id} s'est connecté`)
-
+    // Ajouter un utilisateur
     socket.on("add-user", ({ username, documentId }) => {
         socket.username = username;
+        console.log(`${socket.username} s'est connecté`)
         const user = { username, documentId, socketId: socket.id };
         users.push(user)
         io.to(documentId).emit("user-connected", users);
     });
 
+    // Récupérer la liste des utilisarteurs connectés
     socket.on("get-users", documentId => {
         io.emit("load-users", users)
     })
 
+    // Gérer le document (obtenir/envoyer/sauvegarder les changements)
     socket.on("get-document", async documentId => {
         const document = await findOrCreateDocument(documentId);
         socket.join(documentId);
@@ -45,28 +43,33 @@ io.on("connection", socket => {
 
         socket.on("save-document", async data => {
             console.log({ data })
-            await Document.findByIdAndUpdate(documentId, { data });
+            await docSchema.findByIdAndUpdate(documentId, { data });
         })
     })
 
+    // Envoyer un message à la room
     socket.on("send-message", data => {
         socket.to(data.room).emit("receive-message", data);
     })
 
+    // Rejoindre une room
     socket.on("join-room", ({ roomId, documentId }) => {
         // console.log(roomId, documentId)
     });
 
+    // Afficher l'utilisateur qui écrit
     socket.on("writting", username => {
         console.log(username)
         socket.broadcast.emit("writting", username);
     })
 
+    // N'écrit plus
     socket.on("not-writting", () => {
         console.log("not-writting")
         socket.broadcast.emit("not-writting");
     })
 
+    // Gestion de la déconnexion
     socket.on("disconnect", () => {
         const disconnectedUser = users.find(user => user.socketId === socket.id);
         if (disconnectedUser) {
@@ -78,9 +81,10 @@ io.on("connection", socket => {
     });
 })
 
+//  Logique pour récupérer/créer un document dans la base de données
 async function findOrCreateDocument(id){
     if(id === null) return;
-    const document = await Document.findById(id);
+    const document = await docSchema.findById(id);
     if(document) return document;
-    return await Document.create({ _id: id, data: defaultValue });
+    return await docSchema.create({ _id: id, data: defaultValue });
 }

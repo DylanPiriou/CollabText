@@ -5,8 +5,9 @@ export default function Modal({ socket, username, setUsername, handleKeyPress })
 
     const input = useRef();
     const [roomId, setRoomId] = useState("");
+
+    // Logique lorsqu'on valide le pseudo
     const handleRoom = () => {
-        console.log(roomId, documentId)
         socket.emit("join-room", { roomId, documentId })
     }
 

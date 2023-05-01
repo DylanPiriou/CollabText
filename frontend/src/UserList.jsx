@@ -35,12 +35,14 @@ export default function UserList({ socket, documentId }) {
     };
   }, [])
 
+  // Logique pour le titre "Utilisateurs connectés"
   const [onlineMessage, setOnlineMessage] = useState("")
   useEffect(() => {
     setOnlineMessage(onlineUsers.length > 1 ? "Utilisateurs connectés" : "Utilisateur connecté");
 
   }, [onlineUsers])
 
+  // Logique ouverture/fermeture de la collapse
   const [isOpen, setIsOpen] = useState(false);
   const handleCollapse = () => {
     setIsOpen(!isOpen);

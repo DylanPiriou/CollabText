@@ -7,36 +7,39 @@ export default function Chat({ username, socket, documentId }) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [isWriting, setIsWriting] = useState("");
   const [chat, setChat] = useState([]);
-  
-    // Récupère ce qui est écrit dans l'input + affiche que quelqu'un écrit  
-  const handleChange = e => {
-    setCurrentMessage(e.target.value);
-    handleWritting()
-  }
 
+  // Récupère ce qui est écrit dans l'input + affiche que quelqu'un écrit
+  const handleChange = (e) => {
+    setCurrentMessage(e.target.value);
+    handleWritting();
+  };
+
+  // Envoie de l'event que username écrit
   const handleWritting = () => {
     socket.emit("writting", username);
-  }
+  };
 
+  // Envoie d'event que username n'écrit plus
   const handleNotWritting = () => {
     socket.emit("not-writting");
-  }
+  };
 
+  // Récéption des évènements lorque quelqu'un écrit/n'écrit plus
   useEffect(() => {
-    socket.on("writting", username => {
-        setIsWriting(`${username} est en train d'écrire...`);
-    })
+    socket.on("writting", (username) => {
+      setIsWriting(`${username} est en train d'écrire...`);
+    });
     socket.on("not-writting", () => {
-        setIsWriting("");
-    })
+      setIsWriting("");
+    });
 
     return () => {
-        socket.off("writting");
-        socket.off("not-writting");
-    }
-  }, [])
+      socket.off("writting");
+      socket.off("not-writting");
+    };
+  }, []);
 
-    // Logique pour envoyer un message   
+  // Logique pour envoyer un message
   const sendMessage = async (e) => {
     if (currentMessage.trim().length !== 0) {
       const messageData = {
@@ -53,7 +56,7 @@ export default function Chat({ username, socket, documentId }) {
     }
   };
 
-      // Logique pour recevoir le message  
+  // Logique pour recevoir le message
   const [newMessage, setNewMessage] = useState(false);
   useEffect(() => {
     socket.on("receive-message", (data) => {
@@ -66,7 +69,7 @@ export default function Chat({ username, socket, documentId }) {
     };
   }, [socket]);
 
-    // Logique pour l'ouverture/fermeture du chat
+  // Logique pour l'ouverture/fermeture du chat
   const handleChat = () => {
     setIsOpen(!isOpen);
     setNewMessage(false);
@@ -112,7 +115,9 @@ export default function Chat({ username, socket, documentId }) {
                   placeholder="Commencez à parler..."
                   value={currentMessage}
                   onChange={(e) => handleChange(e)}
-                  onBlur={() => {handleNotWritting()}}
+                  onBlur={() => {
+                    handleNotWritting();
+                  }}
                   onKeyDown={(e) => {
                     e.key === "Enter" && sendMessage(e);
                   }}
