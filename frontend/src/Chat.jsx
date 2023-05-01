@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Chat.scss";
 import ScrollToBottom from "react-scroll-to-bottom";
+import { RxCross1 } from "react-icons/rx";
+import { RxChatBubble } from "react-icons/rx";
+import { RxPaperPlane } from "react-icons/rx";
 
 export default function Chat({ username, socket, documentId }) {
   const [isOpen, setIsOpen] = useState(true);
@@ -79,12 +82,12 @@ export default function Chat({ username, socket, documentId }) {
     <>
       {isOpen ? (
         <div className="chat-icon" onClick={() => handleChat()}>
-          ☎{newMessage && <span className="notif"></span>}
+          <RxChatBubble /> {newMessage && <span className="notif"></span>}
         </div>
       ) : (
         <>
           <div className="chat-icon" onClick={() => handleChat()}>
-            x
+            <RxCross1/>
           </div>
           <div className="chat">
             <ScrollToBottom className="chat-content">
@@ -122,7 +125,7 @@ export default function Chat({ username, socket, documentId }) {
                     e.key === "Enter" && sendMessage(e);
                   }}
                 />
-                <button onClick={() => sendMessage()}>►</button>
+                <button onClick={() => sendMessage()}><RxPaperPlane/></button>
               </div>
             </ScrollToBottom>
           </div>

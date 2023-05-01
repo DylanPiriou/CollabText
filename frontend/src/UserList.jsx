@@ -51,6 +51,7 @@ export default function UserList({ socket, documentId }) {
   return (
     <div className="online-container" onClick={() => handleCollapse()}>
       <div className="header-collapse">
+        <span className="online-logo"></span>
         <h2>{onlineMessage} : {onlineUsers.length}</h2>
       </div>
       {isOpen && (
