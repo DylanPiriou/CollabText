@@ -24,7 +24,7 @@ io.on("connection", socket => {
         console.log(`${socket.username} s'est connecté`)
         const user = { username, documentId, socketId: socket.id };
         users.push(user)
-        io.to(documentId).emit("user-connected", user);
+        io.to(documentId).emit("user-connected", users);
     });
 
     // Récupérer la liste des utilisarteurs connectés

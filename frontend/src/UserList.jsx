@@ -50,6 +50,16 @@ export default function UserList({ socket, documentId }) {
     setIsOpen(!isOpen);
   }
 
+  const randonColor = () => {
+    // Couleurs comprises entre 100 et 250
+    const red = Math.floor(Math.random() * 100 + 150);
+    const green = Math.floor(Math.random() * 100 + 150);
+    const blue = Math.floor(Math.random() * 100 + 150);
+
+    const color = `rgb(${red}, ${green}, ${blue})`;
+    return color;
+  }
+
   return (
     <div className="online-container" onClick={() => handleCollapse()}>
       <div className="header-collapse">
@@ -62,7 +72,7 @@ export default function UserList({ socket, documentId }) {
           {onlineUsers && onlineUsers.map((user, index) => {
             return (
               <li className="user" key={`connectedUser-${index}`}>
-                <span className="logo">{user?.username?.slice(0, 2)}</span>
+                <span className="logo" style={{background: randonColor()}}>{user?.username?.slice(0, 2)}</span>
                 <span className="data"><b>{user.username}</b> est connecté.</span>
               </li>
             )
