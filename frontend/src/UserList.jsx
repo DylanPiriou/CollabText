@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import "./UserList.scss";
+import { RxChevronRight } from "react-icons/rx";
+import { RxChevronDown } from "react-icons/rx";
 
 export default function UserList({ socket, documentId }) {
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -38,7 +40,7 @@ export default function UserList({ socket, documentId }) {
   // Logique pour le titre "Utilisateurs connectés"
   const [onlineMessage, setOnlineMessage] = useState("")
   useEffect(() => {
-    setOnlineMessage(onlineUsers.length > 1 ? "Utilisateurs connectés" : "Utilisateur connecté");
+    setOnlineMessage(onlineUsers.length > 1 ? "utilisateurs connectés" : "utilisateur connecté");
 
   }, [onlineUsers])
 
@@ -52,7 +54,8 @@ export default function UserList({ socket, documentId }) {
     <div className="online-container" onClick={() => handleCollapse()}>
       <div className="header-collapse">
         <span className="online-logo"></span>
-        <h2>{onlineMessage} : {onlineUsers.length}</h2>
+        <h2>{onlineUsers.length} {onlineMessage}</h2>
+        {!isOpen ? <RxChevronRight/> : <RxChevronDown/>}
       </div>
       {isOpen && (
         <ul className="users-wrapper">
