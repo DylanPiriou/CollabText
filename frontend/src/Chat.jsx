@@ -109,7 +109,7 @@ export default function Chat({ username, socket, documentId }) {
                   );
                 })}
               </ul>
-              <p>{isWriting}</p>
+              <p className="writing">{isWriting}</p>
               <div className="input-wrapper">
                 <input
                   type="text"

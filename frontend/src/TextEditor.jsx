@@ -38,7 +38,7 @@ export default function TextEditor() {
 
   // Chargement du contenu de l'éditeur à partir du serveur
   useEffect(() => {
-    if (socket == null || quill == null) return;
+    if (socket == null || quill == null || !isNamed) return;
     socket.once("load-document", (document) => {
       quill.setContents(document);
       quill.enable();

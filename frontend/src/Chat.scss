@@ -110,11 +110,13 @@
             }
         }
 
-        p{
+        .writing{
             position: absolute;
             left: 0;
             bottom: 50px;
             color: whitesmoke;
+            opacity: 0.8;
+            font-style: italic;
         }
 
         .input-wrapper{
