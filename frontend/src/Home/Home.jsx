@@ -1,10 +1,10 @@
-import "./Home.scss";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import "./Home.scss";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
-import Modal from "../Modal/Modal";
+import Auth from "../Auth/Auth";
 import Header from "../Header/Header";
 
 // Options pour la barre d'outil de l'éditeur de texte (Quill)
@@ -20,7 +20,7 @@ const toolbarOptions = [
   ["clean"],
 ];
 
-export default function TextEditor() {
+export default function Home() {
   const [socket, setSocket] = useState();
   const [quill, setQuill] = useState();
 
@@ -37,6 +37,7 @@ export default function TextEditor() {
     };
   }, []);
 
+  
   // Chargement du contenu de l'éditeur à partir du serveur
   useEffect(() => {
     if (socket == null || quill == null || !isNamed) return;
@@ -117,7 +118,7 @@ export default function TextEditor() {
   return (
     <>
       {isNamed === false ? (
-        <Modal
+        <Auth
           socket={socket}
           username={username}
           setUsername={setUsername}

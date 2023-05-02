@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import "./Modal.scss";
+import "./Auth.scss";
 
 export default function Modal({ socket, username, setUsername, handleKeyPress }) {
 

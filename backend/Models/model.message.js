@@ -4,8 +4,8 @@ const messageSchema = new mongoose.Schema({
     room: String,
     userId: String,
     username: String,
-    message: String,
-    timestamp: Date
+    message: String
 })
 
-module.exports = mongoose.model("Message", messageSchema);
+ const Msg = mongoose.model("Message", messageSchema);
+ module.exports = Msg

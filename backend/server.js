@@ -1,6 +1,6 @@
 const connectDB = require("./mongo");
 const docSchema = require("./Models/model.document");
-const messageSchema = require("./Models/model.message");
+const Msg = require("./Models/model.message");
 const dotenv = require("dotenv").config();
 
 connectDB();
@@ -16,7 +16,6 @@ const defaultValue = "";
 let users = [];
 
 io.on("connection", socket => {
-
     // Ajouter un utilisateur
     socket.on("add-user", ({ username, documentId }) => {
         socket.username = username;
@@ -30,7 +29,6 @@ io.on("connection", socket => {
     // Récupérer la liste des utilisarteurs connectés
     socket.on("get-users", documentId => {
         const usersInRoom = users.filter(user => user.documentId === documentId);
-        console.log(usersInRoom);
         io.emit("load-users", usersInRoom);
     });
 
@@ -50,15 +48,25 @@ io.on("connection", socket => {
         })
     })
 
-    // Envoyer un message à la room
-    socket.on("send-message", data => {
-        socket.to(data.room).emit("receive-message", data);
+    socket.on("load-messages", async id => {
+        const messages = await Msg.find({ room: id });
+        console.log(messages)
+        socket.emit("display-messages", messages)
     })
 
-    // Rejoindre une room
-    socket.on("join-room", ({ roomId, documentId }) => {
-        // console.log(roomId, documentId)
-    });
+    // Envoyer un message à la room + stockage BDD
+    socket.on("send-message", data => {
+        const message = new Msg({
+            room: data.room,
+            userId: data.userId,
+            username: data.username,
+            message: data.message
+        })
+        message.save().then(() => {
+            console.log("msg stocké et envoyé au front")
+            socket.to(data.room).emit("receive-message", data);
+        })
+    })
 
     // Afficher l'utilisateur qui écrit
     socket.on("writting", username => {

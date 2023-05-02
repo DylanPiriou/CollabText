@@ -11,6 +11,10 @@ export default function Chat({ username, socket, documentId }) {
   const [isWriting, setIsWriting] = useState("");
   const [chat, setChat] = useState([]);
 
+  socket.on("display-messages", messages => {
+    setChat(messages);
+  })
+
   // Récupère ce qui est écrit dans l'input + affiche que quelqu'un écrit
   const handleChange = (e) => {
     setCurrentMessage(e.target.value);
@@ -29,6 +33,8 @@ export default function Chat({ username, socket, documentId }) {
 
   // Récéption des évènements lorque quelqu'un écrit/n'écrit plus
   useEffect(() => {
+    socket.emit("load-messages", documentId);
+
     socket.on("writting", (username) => {
       setIsWriting(`${username} est en train d'écrire...`);
     });
@@ -62,6 +68,7 @@ export default function Chat({ username, socket, documentId }) {
   // Logique pour recevoir le message
   const [newMessage, setNewMessage] = useState(false);
   useEffect(() => {
+
     socket.on("receive-message", (data) => {
       setChat((current) => [...current, data]);
       setNewMessage(true);
