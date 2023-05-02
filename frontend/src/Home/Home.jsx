@@ -1,10 +1,11 @@
+import "./Home.scss";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
-import Modal from "./Modal";
-import Header from "./Header";
+import Modal from "../Modal/Modal";
+import Header from "../Header/Header";
 
 // Options pour la barre d'outil de l'éditeur de texte (Quill)
 const toolbarOptions = [
