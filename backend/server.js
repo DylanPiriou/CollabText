@@ -62,13 +62,11 @@ io.on("connection", socket => {
 
     // Afficher l'utilisateur qui écrit
     socket.on("writting", username => {
-        console.log(username)
         socket.broadcast.emit("writting", username);
     })
 
     // N'écrit plus
     socket.on("not-writting", () => {
-        console.log("not-writting")
         socket.broadcast.emit("not-writting");
     })
 
@@ -85,9 +83,9 @@ io.on("connection", socket => {
 })
 
 //  Logique pour récupérer/créer un document dans la base de données
-async function findOrCreateDocument(id){
-    if(id === null) return;
+async function findOrCreateDocument(id) {
+    if (id === null) return;
     const document = await docSchema.findById(id);
-    if(document) return document;
+    if (document) return document;
     return await docSchema.create({ _id: id, data: defaultValue });
 }
