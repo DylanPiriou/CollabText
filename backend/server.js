@@ -1,6 +1,6 @@
 const connectDB = require("./mongo");
 const docSchema = require("./Models/model.document");
-const Msg = require("./Models/model.message");
+const messageSchema = require("./Models/model.message");
 const dotenv = require("dotenv").config();
 
 connectDB();
@@ -34,9 +34,10 @@ io.on("connection", socket => {
 
     // Gérer le document (obtenir/envoyer/sauvegarder les changements)
     socket.on("get-document", async documentId => {
+        console.log(documentId)
         const document = await findOrCreateDocument(documentId);
         socket.join(documentId);
-        socket.emit("load-document", document.data);
+        socket.emit("load-document", document?.data);
 
         socket.on("send-changes", delta => {
             socket.broadcast.to(documentId).emit("receive-changes", delta)
@@ -49,14 +50,14 @@ io.on("connection", socket => {
     })
 
     socket.on("load-messages", async id => {
-        const messages = await Msg.find({ room: id });
+        const messages = await messageSchema.find({ room: id });
         console.log(messages)
         socket.emit("display-messages", messages)
     })
 
     // Envoyer un message à la room + stockage BDD
     socket.on("send-message", data => {
-        const message = new Msg({
+        const message = new messageSchema({
             room: data.room,
             userId: data.userId,
             username: data.username,

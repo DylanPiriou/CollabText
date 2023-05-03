@@ -37,7 +37,6 @@ export default function Home() {
     };
   }, []);
 
-  
   // Chargement du contenu de l'éditeur à partir du serveur
   useEffect(() => {
     if (socket == null || quill == null || !isNamed) return;
